@@ -1,18 +1,54 @@
+// src/App.jsx
+import { Routes, Route } from "react-router-dom";
+import Home from "./Home";
+import Login from "./Login";
+import Register from "./Register";
+import Dashboard from "./Dashboard";
+import CoursesList from "./CoursesList";
+import CourseDetails from "./CourseDetails";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminDashboard from "./AdminDashboard";
+import LessonViewer from "./LessonViewer";
+import Navbar from "./components/Navbar";   
+
+
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900">
-      <div className="bg-slate-800 text-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h1 className="text-3xl font-bold mb-3 text-center">
-          LearnSmart LMS
-        </h1>
-        <p className="text-sm text-slate-300 text-center mb-4">
-          MERN stack LMS – setup complete 🎉
-        </p>
-        <p className="text-xs text-slate-400 text-center">
-          Next: we build auth, courses, and dashboards.
-        </p>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      <Route path="/courses" element={<CoursesList />} />
+      <Route path="/courses/:id" element={<CourseDetails />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+  path="/admin"
+  element={
+    <ProtectedRoute>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+    <Route
+  path="/courses/:courseId/lessons/:lessonId"
+  element={
+    <ProtectedRoute>
+      <LessonViewer />
+    </ProtectedRoute>
+  }
+/>
+
+    </Routes>
   );
 }
 

@@ -11,7 +11,7 @@ router.post("/register", register);
 // POST /api/auth/login
 router.post("/login", login);
 
-// GET /api/auth/me
+// GET /api/auth/me  -> return current logged-in user
 router.get("/me", protect, getMe);
 
 module.exports = router;

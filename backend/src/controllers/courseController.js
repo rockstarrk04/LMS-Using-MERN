@@ -31,6 +31,21 @@ const getCourses = async (req, res) => {
   }
 };
 
+// GET /api/courses/mine  -> courses created by logged-in instructor/admin
+const getMyCourses = async (req, res) => {
+  try {
+    const filter = { instructor: req.user._id };
+
+    const courses = await Course.find(filter).sort({ createdAt: -1 });
+
+    return res.json({ courses });
+  } catch (error) {
+    console.error("getMyCourses error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 // GET /api/courses/:id
 const getCourseById = async (req, res) => {
   try {
@@ -88,4 +103,5 @@ module.exports = {
   getCourses,
   getCourseById,
   createCourse,
+  getMyCourses,
 };
