@@ -28,10 +28,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
-app.use("/api/enrollments", enrollmentRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/lessons", lessonRoutes);
-
-
+app.use("/api/enrollments", enrollmentRoutes); // Corrected import for enrollmentRoutes
+app.use("/api/admin", adminRoutes); // Corrected import for adminRoutes
+app.use("/api/lessons", lessonRoutes); // Corrected import for lessonRoutes
 
 module.exports = app;

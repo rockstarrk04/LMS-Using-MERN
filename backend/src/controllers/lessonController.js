@@ -36,7 +36,7 @@ const createLessonForCourse = async (req, res) => {
     // Only allow course instructor or admin to add lessons
     if (
       req.user.role !== "admin" &&
-      course.instructor.toString() !== req.user._id.toString()
+      course.instructor?.toString() !== req.user._id.toString()
     ) {
       return res
         .status(403)
@@ -62,7 +62,23 @@ const createLessonForCourse = async (req, res) => {
   }
 };
 
+// GET /api/lessons/:id
+const getLessonById = async (req, res) => {
+  try {
+    const lesson = await Lesson.findById(req.params.id).populate(
+      "course",
+      "title instructor"
+    );
+    if (!lesson) return res.status(404).json({ message: "Lesson not found" });
+    return res.json({ lesson });
+  } catch (error) {
+    console.error("getLessonById error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   getLessonsForCourse,
   createLessonForCourse,
+  getLessonById, // Export getLessonById
 };

@@ -1,18 +1,18 @@
 // backend/src/routes/adminRoutes.js
 
-import express from "express";
+const express = require("express");
 
 // --- Controllers ---
-import {
+const {
   getAllUsers,
   toggleBlockUser,
   getAllCourses,
   deleteCourse,
-} from "../controllers/adminController.js";
+} = require("../controllers/adminController");
 
 // --- Middleware ---
-import { protect } from "../middleware/auth.js"; // Standard authentication check
-import { allowRoles } from "../middleware/roleMiddleware.js"; // Role-based checks
+const { protect } = require("../middlewares/authMiddleware"); // Standard authentication check
+const { allowRoles } = require("../middlewares/roleMiddleware"); // Role-based checks
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ const router = express.Router();
 // -----------------------------------------------------------------
 
 // Middleware applied to ALL routes defined below in this file
-router.use(protect, allowRoles("admin"));
+router.use(protect, allowRoles("admin")); // Apply to all routes in this file
 
 // --- User Management ---
 // GET /api/admin/users - Get all users
@@ -40,4 +40,4 @@ router.get("/courses", getAllCourses);
 // DELETE /api/admin/courses/:id - Delete a specific course
 router.delete("/courses/:id", deleteCourse);
 
-export default router;
+module.exports = router;

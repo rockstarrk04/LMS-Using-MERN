@@ -1,32 +1,27 @@
 // backend/src/routes/courseRoutes.js
 
-import express from "express";
+const express = require("express");
 
 // --- Controllers ---
-import {
+const {
   getCourses,
   getCourseById,
   createCourse,
   getMyCourses,
-  deleteCourse, // Assuming deleteCourse should be included
-} from "../controllers/courseController.js";
-
-import {
+  deleteCourse,
+  updateCourse,
+} = require("../controllers/courseController");
+const {
   getLessonsForCourse,
   createLessonForCourse,
-} from "../controllers/lessonController.js";
-
-import {
-  enrollInCourse,
-} from "../controllers/enrollmentController.js";
+} = require("../controllers/lessonController");
 
 // --- Middleware ---
-import { protect } from "../middleware/auth.js"; // Standard auth check
-import { allowRoles } from "../middleware/roleMiddleware.js"; // Role-based checks
+const { protect } = require("../middlewares/authMiddleware"); // Standard auth check
+const { allowRoles } = require("../middlewares/roleMiddleware"); // Role-based checks
 
 const router = express.Router();
-const { protect } = require("../middleware/authMiddleware");
-
+// -----------------------------------------------------------------
 // -----------------------------------------------------------------
 // 📚 PUBLIC ROUTES
 // -----------------------------------------------------------------
@@ -45,12 +40,12 @@ router.get("/:courseId/lessons", getLessonsForCourse);
 // -----------------------------------------------------------------
 
 // POST /api/courses/:courseId/enroll - Student enrolls in a course
-router.post(
-  "/:courseId/enroll",
-  protect,
-  allowRoles("student"),
-  enrollInCourse
-);
+// router.post(
+//   "/:courseId/enroll",
+//   protect,
+//   allowRoles("student"),
+//   enrollInCourse
+// );
 
 // -----------------------------------------------------------------
 // 💼 INSTRUCTOR/ADMIN ROUTES
@@ -67,8 +62,8 @@ router.get(
 // POST /api/courses - Create a new course
 router.post(
   "/",
-  protect,
-  allowRoles("instructor", "admin"),
+  protect, // Protect the route
+  allowRoles("instructor", "admin"), // Only instructors and admins can create courses
   createCourse
 );
 
@@ -93,4 +88,12 @@ router.delete(
   deleteCourse
 );
 
-export default router;
+// PUT /api/courses/:id - Update a course
+router.put(
+  "/:id",
+  protect,
+  allowRoles("instructor", "admin"),
+  updateCourse
+);
+
+module.exports = router;

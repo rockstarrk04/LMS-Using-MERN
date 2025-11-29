@@ -44,7 +44,7 @@ const getMyEnrollments = async (req, res) => {
     const enrollments = await Enrollment.find({
       student: req.user._id,
     })
-      .populate("course")
+      .populate("course", "title description thumbnailUrl")
       .sort({ createdAt: -1 });
 
     return res.json({ enrollments });
@@ -54,7 +54,25 @@ const getMyEnrollments = async (req, res) => {
   }
 };
 
+// GET /api/enrollments/:id (student)
+const getEnrollmentById = async (req, res) => {
+  try {
+    const enrollment = await Enrollment.findOne({
+      _id: req.params.id,
+      student: req.user._id,
+    }).populate("course", "title description thumbnailUrl");
+
+    if (!enrollment) return res.status(404).json({ message: "Enrollment not found" });
+
+    return res.json({ enrollment });
+  } catch (error) {
+    console.error("getEnrollmentById error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   enrollInCourse,
   getMyEnrollments,
+  getEnrollmentById,
 };

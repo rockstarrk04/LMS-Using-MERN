@@ -1,6 +1,6 @@
 // backend/src/controllers/authController.js
 const User = require("../models/User");
-const generateToken = require("../utils/generateToken");
+const generateToken = require("../utils/generateToken"); // 👈 add this
 const bcrypt = require("bcrypt"); // 👈 add this
 
 // REGISTER

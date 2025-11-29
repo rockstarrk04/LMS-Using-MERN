@@ -1,15 +1,4 @@
 // backend/src/controllers/adminController.js
-import User from "../models/User.js";
-
-export const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 
 const User = require("../models/User");
 const Course = require("../models/Course");
@@ -19,7 +8,7 @@ const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password").sort({ createdAt: -1 });
     return res.json({ users });
-  } catch (error) {
+  } catch (error) { 
     console.error("getAllUsers error:", error);
     return res.status(500).json({ message: "Server error" });
   }

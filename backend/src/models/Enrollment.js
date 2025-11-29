@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const enrollmentSchema = new mongoose.Schema(
   {
     student: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
     },

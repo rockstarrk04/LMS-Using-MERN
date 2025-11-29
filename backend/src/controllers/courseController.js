@@ -1,5 +1,7 @@
 // backend/src/controllers/courseController.js
+
 const Course = require("../models/Course");
+const Enrollment = require("../models/Enrollment");
 
 // GET /api/courses  -> list all approved courses
 const getCourses = async (req, res) => {
@@ -44,7 +46,6 @@ const getMyCourses = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // GET /api/courses/:id
 const getCourseById = async (req, res) => {
@@ -98,10 +99,74 @@ const createCourse = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+// DELETE COURSE
+const deleteCourse = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Delete all enrollments associated with this course
+    await Enrollment.deleteMany({ course: req.params.id });
+
+    await course.deleteOne();
+
+    return res.json({ message: "Course deleted successfully" });
+  } catch (error) {
+    console.error("Delete course error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// UPDATE COURSE
+const updateCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, category, level, language, thumbnailUrl, price, isApproved } = req.body;
+
+    const course = await Course.findById(id);
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Only allow instructor or admin to update their own course
+    if (req.user.role !== "admin" && course.instructor.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "You are not authorized to update this course" });
+    }
+
+    course.title = title || course.title;
+    course.description = description || course.description;
+    course.category = category || course.category;
+    course.level = level || course.level;
+    course.language = language || course.language;
+    course.thumbnailUrl = thumbnailUrl || course.thumbnailUrl;
+    course.price = price !== undefined ? price : course.price;
+
+    // Admin can approve/unapprove courses
+    if (req.user.role === "admin" && isApproved !== undefined) {
+      course.isApproved = isApproved;
+    }
+
+    const updatedCourse = await course.save();
+
+    return res.json({
+      message: "Course updated successfully",
+      course: updatedCourse,
+    });
+  } catch (error) {
+    console.error("updateCourse error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
 
 module.exports = {
   getCourses,
   getCourseById,
   createCourse,
   getMyCourses,
+  updateCourse,
+  deleteCourse,
 };

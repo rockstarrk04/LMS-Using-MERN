@@ -1,5 +1,5 @@
 // middleware/admin.js
-export const admin = (req, res, next) => {
+module.exports = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
     return next();
   }

@@ -1,26 +1,22 @@
 // backend/src/models/User.js
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt"); // 👈 Add this line
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
-      trim: true,
+      required: true,
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: true,
       unique: true,
-      lowercase: true,
-      trim: true,
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
-      minlength: 6,
-      select: false, // don't return password by default
+      required: true,
+      select: false, // Hide password by default
     },
     role: {
       type: String,
@@ -29,19 +25,22 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "",
+      default: "https://via.placeholder.com/150",
     },
     isBlocked: {
       type: Boolean,
       default: false,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-// Compare password
-userSchema.methods.checkPassword = async function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+// Method to check password
+userSchema.methods.checkPassword = async function (enteredPassword) {
+  // The error was here because `bcrypt` was not defined
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
 const User = mongoose.model("User", userSchema);
