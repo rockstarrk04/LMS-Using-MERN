@@ -2,8 +2,10 @@
 node_modules/
 
 # env files
-.env
-.env.local
+*.env
+*.env.local
+!**/.env.example
+!**/.env.ci
 
 # build
 dist/

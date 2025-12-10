@@ -1,2 +1,7 @@
-// In development, this will be proxied by Vite to your backend server (e.g., http://localhost:5000)
-export const API_BASE_URL = "/api";
+export const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error(
+    "VITE_API_URL is not defined. Please create a .env file and add the variable."
+  );
+}
